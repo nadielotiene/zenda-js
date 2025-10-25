@@ -1,0 +1,136 @@
+body {
+    font-family: 'Courier New', monospace;
+    background: #1A1A2E;
+    color: #FFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.ui {
+    display: flex;
+    justify-content: space-between;
+    width: 480px;
+}
+
+#grid {
+    height: 432px;
+    width: 480px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) inset, 0 1px 0 #FFF;
+    display: flex;
+    flex-wrap: wrap;
+    background: url(./public/images/floor-tiles.png);
+    background-size: cover;
+    position: relative;
+    padding: 0;
+} 
+
+#grid div {
+    height: 48px;
+    width: 48px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.link-left, .link-right, .link-bottom, .link-up {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    z-index: 10;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.link-left {
+    background-image: url(./public/images/link-left.png);
+}
+
+.link-right {
+    background-image: url(./public/images/link-right.png);
+}
+
+.link-down {
+    background-image: url(./public/images/link-down.png);
+}
+
+.link-up {
+    background-image: url(./public/images/link-up.png);
+}
+
+.left-wall {
+    background-image: url(./public/images/wall-left.png);
+}
+
+.right-wall {
+    background-image: url(./public/images/wall-right.png);
+}
+
+.top-wall {
+    background-image: url(./public/images/wall-top.png);
+}
+
+.bottom-wall {
+    background-image: url(./public/images/wall-bottom.png);
+}
+
+.top-right-wall {
+    background-image: url(./public/images/wall-top-right.jpg);
+}
+
+.bottom-left-wall {
+    background-image: url(./public/images/wall-bottom-left.png);
+}
+
+.top-left-wall {
+    background-image: url(./public/images/wall-top-left.png);
+}
+
+.bottom-right-wall {
+    background-image: url(./public/images/wall-bottom-right.png);
+}
+
+.left-door {
+    background-image: url(./public/images/door-left.png);
+}
+
+.top-door {
+    background-image: url(./public/images/door-top.png);
+}
+
+.stairs {
+    background-image: url(./public/images/stairs.png);
+}
+
+.torches {
+    background-image: url(./public/images/torches.png);
+}
+
+.fire-pot {
+    background-image: url(./public/images/fire-pot.png);
+}
+
+.boom {
+    background-image: url(./public/images/boom.png);
+}
+
+.stalfos, .blade-trap {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    z-index: 5;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.stalfos {
+    background-image: url(./public/images/stalfos.png);
+}
+
+.blade-trap {
+    background-image: url(./public/images/blade-trap.png);
+}
