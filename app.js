@@ -49,17 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
 
     function createBoard() {
-
         const currentMap = maps[level]
-
-        for (let y = 0; y < 9; y++) {
-            for (let x = 0; x < 10; x++) {
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 10; j++) {
                 const square = document.createElement('div');
-                square.setAttribute('id', y * width + x);
-
-                const char = currentMap[y][x];
-                addMapElement(square, char, y, x);
-
+                square.setAttribute('id', i * width + j);
+                const char = currentMap[i][j];
+                addMapElement(square, char, j, i);
                 grid.appendChild(square);
                 squares.push(square);
             }
@@ -70,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log(squares)
 
-    function addMapElement(square, char, y, x) {
+    function addMapElement(square, char, x, y) {
         switch(char) {
             case 'a':
                 square.classList.add('left-wall')
@@ -111,9 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
             case '(':
                 square.classList.add('fire-pot')
                 break
-            case '':
-                square.classList.add('boom')
-                break
             case '*':
                 createBladeTrap(x,y)
                 break
@@ -143,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             x, y,
             direction: -1,
             type: 'blade-trap',
-            bladeTrapElement
+            element: bladeTrapElement
         }
 
         enemies.push(bladeTrap)
@@ -161,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             direction: -1,
             timer: Math.random() * 5,
             type: 'stalfos',
-            stalfosElement
+            element: stalfosElement
         }
 
         enemies.push(stalfos)
@@ -209,19 +202,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return 
             }
+            playerPosition = newPosition
+            playerElement.style.left = `${(playerPosition % width) * tileSize}px`
+            playerElement.style.top = `${Math.floor(playerPosition / width) * tileSize}px`
         }
-
-        playerPosition = newPosition
-        playerElement.style.left = `${(playerPosition % width) * tileSize}px`
-        playerElement.style.top = `${Math.floor(playerPosition / width) * tileSize}px`
 
     }
 
     function canMoveTo(position) {
         if (position < 0 || position >= squares.length) return false
-
         const square = squares[position]
-
         return !square.classList.contains('left-wall') &&
                !square.classList.contains('right-wall')&&
                !square.classList.contains('top-wall')&&
