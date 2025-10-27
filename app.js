@@ -224,6 +224,100 @@ document.addEventListener('DOMContentLoaded', () => {
                !square.classList.contains('fire-pot')
     }
 
+    function SpawnBoom() {
+        let boomX = playerPosition % width
+        let boomY= Math.floor(playerPosition / width)
+
+        switch(playerDirection) {
+            case "left":
+                boomX -= 1
+                break
+            case "right":
+                boomX += 1
+                break
+            case "up":
+                boomY -= 1
+                break
+            case "down":
+                boomY += 1
+                break
+        }
+
+        if (boomX >= 0 && boomX < width && boomY >= 0 && boomY < 9) {
+            const boomElement = document.createElement("div")
+            boomElement.className = "boom"
+            boomElement.style.left = `${boomX * tileSize}px`
+            boomElement.style.top = `${boomY * tileSize}px`
+            grid.appendChild(boomElement)
+
+            checkBoomEnemyCollision(boomX, boomY)
+
+            setTimeout(() => {
+                if (boomElement.parentNode) {
+                    boomElement.parentNode.removeChild(boomElement)
+                }
+            }, 1000)
+        }
+    }
+
+    function checkBoomEnemyCollision(boomX, boomY) {
+        for (let i = enemies.length -1; i >= 0; i--) {
+            const enemy = enemies[i]
+            const enemyX = Math.round(enemy.x)
+            const enemyY = Math.round(enemy.y)
+
+            if (enemyX === boomX && enemyY === boomY) {
+                if (enemy.element.parentNode) {
+                    enemy.element.parentNode.removeChild(enemy.element)
+                }
+                enemies.splice(i, 1)
+                score++
+                updateDisplays()
+                break
+            }
+        }
+    }
+
+    function updateDisplays() {
+        scoreDisplay.innerHTML = score
+        levelDisplay.innerHTML = level + 1
+        enemyDisplay.innerHTML = enemies.length
+    }
+
+    function nextLevel() {
+        level = (level + 1) % maps.length
+        createBoard()
+    }
+
+    function showEnemiesRemainingMessage() {
+        grid.style.filter = "hue-rotate(0deg) saturate(2) brightness(1.5)"
+        grid.style.bowShadow = "0 0 20px red"
+
+        setTimeout(() => {
+            grid.style.filter = ""
+            grid.style.boxShadow = ""
+        }, 300)
+
+        showTemporaryMessage("Defeat all enemies first!", "red", 2000)
+    }
+
+    function showTemporaryMessage(message, color, duration) {
+        const existingMessage = document.getElementById("temp-message")
+        if (existingMessage) existingMessage.remove()
+
+        const messageElement = document.createElement("div")
+        messageElement.id = "temp-message"
+        messageElement.textContent = message
+        messageElement.style.color = color
+        grid.appendChild(messageElement)
+
+        setTimeout(() => {
+            if (messageElement.parentNode) {
+                messageElement.remove()
+            }
+        }, duration)
+    }
+
     document.addEventListener('keydown', (e) => {
         if(!gameRunning) return
 
@@ -246,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break
             case 'Space':
                 e.preventDefault()
-                // SpawnBoom()
+                SpawnBoom()
                 break
         }
     })

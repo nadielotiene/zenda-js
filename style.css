@@ -115,6 +115,25 @@ body {
 
 .boom {
     background-image: url(./public/images/boom.png);
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    z-index: 15;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: explode 1s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
 }
 
 .stalfos, .blade-trap {
@@ -133,4 +152,18 @@ body {
 
 .blade-trap {
     background-image: url(./public/images/blade-trap.png);
+}
+
+#temp-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 180px;
+    transform: translate(-50%, -50%);
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 20;
+    pointer-events: none;
+    background: rgba(0, 0, 0, .8);
 }
