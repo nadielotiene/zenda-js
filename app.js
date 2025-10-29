@@ -49,6 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
 
     function createBoard() {
+        gameRunning = true
+        grid.innerHTML = ''
+        squares.length = 0
+        enemies = []
         const currentMap = maps[level]
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 10; j++) {
@@ -61,10 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         createPlayer()
+        updateDisplays()
     }
-    createBoard()
 
-    console.log(squares)
+    // console.log(squares)
 
     function addMapElement(square, char, x, y) {
         switch(char) {
@@ -205,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             playerPosition = newPosition
             playerElement.style.left = `${(playerPosition % width) * tileSize}px`
             playerElement.style.top = `${Math.floor(playerPosition / width) * tileSize}px`
+            checkPlayerEnemyCollision()
         }
 
     }
@@ -278,6 +283,79 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function checkPlayerEnemyCollision(){
+        const playerX = playerPosition % width
+        const playerY = Math.floor(playerPosition / width)
+
+        for (const enemy of enemies) {
+            const enemyX = Math.round(enemy.x)
+            const enemyY = Math.round(enemy.y)
+
+            if (enemyX === playerX && enemyY === playerX) {
+                gameOver()
+                return
+            }
+        }
+    }
+
+    function moveEnemies(deltaTime) {
+        for (const enemy of enemies) {
+            if (enemy.type === 'bladeTrap') {
+                moveBladeTrap(enemy, deltaTime)
+            } else if (enemy.type === 'stalfos') {
+                moveStalfos(enemy, deltaTime)
+            }
+        }
+    }
+
+    function moveBladeTrap(bladeTrap, deltaTime) {
+        const speed = 2 * deltaTime
+        const newX = bladeTrap.x + (bladeTrap.direction * speed)
+        const y = Math.round(slicer.y)
+
+        if (newX < 0 || newX >= width || isWall(Math.round(newX), y)) {
+            bladeTrap.direction *= -1
+        } else {
+            bladeTrap.x = newX
+        }
+        bladeTrap.element.style.left = `${bladeTrap.x * tileSize}px`
+    }
+
+    function moveStalfos(stalfos, deltaTime) {
+        const speed = 1.5 * deltaTime
+        stalfos.timer -= deltaTime
+        if (stalfos.timer <= 0) {
+            stalfos.direction *= -1
+            stalfos.timer = Math.random() * 5
+        }
+
+        const newY = stalfos.y + (stalfos.direction * speed)
+        const x = Math.round(stalfos.x)
+
+        if (newY < 0 || newY >= 9 || isWall(x, Math.round(newY))) {
+            stalfos.direction *= -1
+        } else {
+            stalfos.y = newY
+        }
+        stalfos.element.style.top = `${stalfos.y * tileSize}px`
+    }
+
+    function isWall(x, y) {
+        const position = y * width + x
+        if (position < 0 || position >= squares.length) return true
+        const square = squares[position]
+        return square.classList.contains('left-wall')  ||
+            square.classList.contains('right-wall') ||
+            square.classList.contains('top-wall') ||
+            square.classList.contains('bottom-wall') ||
+            square.classList.contains('top-left-wall') ||
+            square.classList.contains('top-right-wall') ||
+            square.classList.contains('bottom-left-wall') ||
+            square.classList.contains('bottom-right-wall') ||
+            square.classList.contains('torches') ||
+            square.classList.contains('fire-pot')
+    }
+
     function updateDisplays() {
         scoreDisplay.innerHTML = score
         levelDisplay.innerHTML = level + 1
@@ -345,4 +423,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
+    let lastTime = 0
+    let animationId
+
+    function gameLoop(currentTime) {
+        const deltaTime = (currentTime - lastTime) / 1000
+        lastTime = currentTime
+        if (gameRunning && deltaTime < 0.1) {
+            moveEnemies(deltaTime)
+            checkPlayerEnemyCollision()
+        }
+        animationId = requestedAnimationFrame(gameLoop)
+    }
+
+
+    function gameOver() {
+        gameRunning = false
+        showTemporaryMessage(`Game Over! Final Score: ${score}`, "white", 3000)
+    }
+
+        createBoard()
+    animationId = requestedAnimationFrame(gameLoop)
 })
